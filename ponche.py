@@ -6,7 +6,7 @@ import config
 import sqlite_handler as sql
 
 ponche_motd ="Pueblo dominicano... hoy es {0}, y es hora de reportarse a sus labores.\n\n"\
-             "Bébete tu ponche y poncha para que Charteris no te ponche.\n\nUsuaros ponchados:"
+             "Bébete tu ponche y poncha para que no te ponchen.\n\nUsuaros ponchados:"
 
 def punchin(update, context):
     now=datetime.now()
