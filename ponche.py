@@ -77,7 +77,7 @@ def button(update, context):
 
 
     if message_data == daytext:
-        if now.hour>=17:
+        if now.hour>=18:
             context.bot.answer_callback_query(query_id,text='tu no estás como tarde o algo así')
             return()
 
