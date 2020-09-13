@@ -202,7 +202,6 @@ tg.dispatcher.add_handler(tg.CommandHandler('back', breaks.back))
 tg.dispatcher.add_handler(tg.CommandHandler('quien', breaks.quien))
 
 
-tg.dispatcher.add_handler(tg.CommandHandler('test', test))
 tg.dispatcher.add_handler(tg.CommandHandler('ponche', ponche.punchin))
 
 
