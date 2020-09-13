@@ -173,16 +173,6 @@ def hack(update, context):
 
 
 
-def test(update,context):
-    #TODO remoe this in production
-    chat_id=update.effective_chat.id
-    user_id=update.effective_user.id
-    text=update.message.text
-    text=toolbox.remove_prefix(text, "/test ")
-    exec(text)
-    return
-
-
 
 
 tg.dispatcher.add_handler(tg.CommandHandler('start', start)) #allow_edited = false https://python-telegram-bot.readthedocs.io/en/stable/telegram.ext.commandhandler.html?highlight=commandhandler#telegram.ext.tg.CommandHandler
