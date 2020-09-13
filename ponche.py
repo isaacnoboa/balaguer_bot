@@ -1,6 +1,7 @@
 from datetime import datetime
 
 import telegram
+import tg
 import toolbox
 import config
 import sqlite_handler as sql
@@ -8,7 +9,7 @@ import sqlite_handler as sql
 ponche_motd ="Pueblo dominicano... hoy es {0}, y es hora de reportarse a sus labores.\n\n"\
              "Bébete tu ponche y poncha para que no te ponchen.\n\nUsuaros ponchados:"
 
-def punchin(update, context):
+def scheduled_punchin():
     now=datetime.now()
     if now.hour < 16:
         output="No es como un chin temprano?"
@@ -19,7 +20,11 @@ def punchin(update, context):
         output=(ponche_motd.format(longdaytext))
         keyboard = [[telegram.InlineKeyboardButton("👊 Poncha 🍷", callback_data=daytext)]]
         reply_markup = telegram.InlineKeyboardMarkup(keyboard)
-    context.bot.send_message(chat_id=config.ponche_group, text=output, reply_markup=reply_markup)#chat id is the destroyers group
+    tg.updater.bot.send_message(chat_id=config.ponche_group, text=output, reply_markup=reply_markup)#chat id is the destroyers group
+    return()
+
+def punchin(update, context):
+    scheduled_punchin()
     return()
 
 def button(update, context):
