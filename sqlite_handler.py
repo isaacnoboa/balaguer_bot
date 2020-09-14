@@ -1,6 +1,6 @@
 import sqlalchemy as sqla
 import json #only used for user import feature, please remove once that's done
-from datetime import datetime, timedeltad
+from datetime import datetime, timedelta
 
 import config
 
