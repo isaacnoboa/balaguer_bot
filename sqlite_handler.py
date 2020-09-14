@@ -1,6 +1,6 @@
 import sqlalchemy as sqla
 import json #only used for user import feature, please remove once that's done
-from datetime import datetime, timedelta
+from datetime import datetime, timedeltad
 
 import config
 
@@ -196,18 +196,10 @@ class MyDatabase:
         return(a)
 
     def get_current_breaks(self):
-        #set the bounds for a complete day
-        timestamp=datetime.now().timestamp()
-        start_time=timestamp-(timestamp%86400)
-        end_time=start_time+86400
-
         if config.verbose:
             print(str(start_time), " - ", str(end_time))
         
-        check=self.breaks.select()\
-                .where(self.breaks.c.start_time > start_time)\
-                .where(self.breaks.c.start_time < end_time)\
-                .where(self.breaks.c.end_time == None)
+        check=self.breaks.select().where(self.breaks.c.end_time == None)
         result=self.conn.execute(check)
         a=self.unzip_results(result)
         return(a)
