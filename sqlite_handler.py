@@ -196,9 +196,6 @@ class MyDatabase:
         return(a)
 
     def get_current_breaks(self):
-        if config.verbose:
-            print(str(start_time), " - ", str(end_time))
-        
         check=self.breaks.select().where(self.breaks.c.end_time == None)
         result=self.conn.execute(check)
         a=self.unzip_results(result)
