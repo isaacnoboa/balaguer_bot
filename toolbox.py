@@ -23,37 +23,61 @@ def count_away_users(amount):
 
 def seconds_to_string(i, include_seconds=True):
     if type(i)==timedelta:
-        duration=i.total_seconds()
+        duration=round(i.total_seconds())
     elif type(i)==int:
         duration=i
     elif type(i)==float:
         duration=round(i)
 
-    duration=round(i)
+    outputlist=[]
     output=""
-    if duration>=3600:
-        if duration//3600==1:
-            output+=str(duration//3600)+" hora"
-        else:
-            output+=str(duration//3600)+" horas"
-        duration=duration%3600
-        if include_seconds:
-            output+=", "
-        else:
-            output+=" y "
-    if duration>=60:
-        if duration//60==1:
-            output+=str(duration//60)+" minuto"
-        else:
-            output+=str(duration//60)+" minutos"
-        duration=duration%60
-        if include_seconds:
-            output+=" y "
-    if include_seconds:
-        if duration==1:
-            output+=str(duration)+" segundo"
-        else:
-            output+=str(duration)+" segundos"
+    hours = duration//3600
+    minutes = (duration%3600)//60
+    seconds = duration%60
+    elements = []
+
+
+    if not include_seconds:
+        seconds = 0
+
+    if hours == 1:
+        elements.append('1 hora')
+    elif hours != 0:
+        elements.append(str(hours)+' horas')
+
+    if minutes == 1:
+        elements.append('1 minuto')
+    elif minutes != 0:
+        elements.append(str(minutes)+' minutos')
+
+    if seconds == 1:
+        elements.append('1 segundo')
+    elif seconds != 0:
+        elements.append(str(seconds)+' segundos')
+
+
+    if len(elements) == 3:
+        output = (elements[0]+', '+
+                 elements[1]+' y '+
+                 elements[2]+'.'
+                 )
+    elif len(elements) == 2:
+        output = (elements[0]+' y '+
+                 elements[1]+'.'
+                 )
+
+    elif len(elements) == 1:
+        output = elements[0]
+
+    else:
+        notify_owner('something went wrong: len(elements) == '+
+                     len(elements)+
+                     "\n"+
+                     '\nhours='+str(hours)+
+                     '\nminutes='+str(minutes)+
+                     '\nseconds='+str(seconds)
+                     )
+
     return(output)
 
 
@@ -257,7 +281,6 @@ def uptime(update,context):
     output="Bot has been up for "+seconds_to_string(now-boot_time)
     output+=", since "+boot_time.strftime("%Y-%m-%d %H:%M:%S")
     context.bot.send_message(chat_id=chat_id, text=output, parse_mode="Markdown")#, reply_to_message_id=update.message.message_id)
-    notify_owner("test")
     return()
 
 def notify_owner(message):
