@@ -59,11 +59,11 @@ def seconds_to_string(i, include_seconds=True):
     if len(elements) == 3:
         output = (elements[0]+', '+
                  elements[1]+' y '+
-                 elements[2]+'.'
+                 elements[2]
                  )
     elif len(elements) == 2:
         output = (elements[0]+' y '+
-                 elements[1]+'.'
+                 elements[1]
                  )
 
     elif len(elements) == 1:
@@ -216,34 +216,6 @@ def pingall(update, context):
     if not user_is_admin(user_id):
         return()
     context.bot.send_message(chat_id=chat_id, text=list_users(config.all_users.keys() ,config.all_users), parse_mode="Markdown")#, reply_to_message_id=update.message.message_id)
-
-
-
-
-# def db_init():
-#     """ Open the database or create it if missing."""
-#     try:
-#         f=open('balaguer.db')
-#         f.close()
-#         db=sqlite.connect('balaguer.db')
-#     except FileNotFoundError:
-#         db=sqlite.connect('balaguer.db')
-#         cursor=db.cursor()
-#         cursor.execute('CREATE TABLE ponche(id INTEGER PRIMARY KEY, '
-#                                            'user_id INTEGER, '
-#                                            'time_stamp INTEGER)')
-#         cursor.execute('CREATE TABLE breaks(id INTEGER PRIMARY KEY, '
-#                                            'user_id INTEGER, '
-#                                            'start_time INTEGER, '
-#                                            'end_time INTEGER, '
-#                                            'is_break INTEGER)')
-#         cursor.execute('CREATE TABLE help_users(id INTEGER PRIMARY KEY, '
-#                                                'user_id INTEGER)')
-#         cursor.execute('CREATE TABLE users(id INTEGER PRIMARY KEY, '
-#                                           'name TEXT, '
-#                                           'is_admin INTEGER)')
-
-
 
 
 
