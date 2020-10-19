@@ -1,4 +1,5 @@
 from datetime import datetime
+import random
 
 import telegram
 import tg
@@ -21,6 +22,7 @@ def scheduled_punchin(update=None, context=None):
         keyboard = [[telegram.InlineKeyboardButton("👊 Poncha 🍷", callback_data=daytext)]]
         reply_markup = telegram.InlineKeyboardMarkup(keyboard)
         users_who_work_today = sql.db.get_users_who_work_today(now)
+        random.shuffle(users_who_work_today)
         output+= "\n"
         for i in users_who_work_today:
             output+= "\n🕟 "
@@ -107,6 +109,7 @@ def button(update, context):
             ponched_ids.append(i['user_id'])
 
         users_who_work_today = sql.db.get_users_who_work_today(now)
+        random.shuffle(users_who_work_today)
         for i in users_who_work_today:
             if i['user_id'] not in ponched_ids:
                 output+= "\n🕟 "
