@@ -20,6 +20,11 @@ def scheduled_punchin():
         output=(ponche_motd.format(longdaytext))
         keyboard = [[telegram.InlineKeyboardButton("👊 Poncha 🍷", callback_data=daytext)]]
         reply_markup = telegram.InlineKeyboardMarkup(keyboard)
+        users_who_work_today = sql.db.get_users_who_work_today(now)
+        output+= "\n"
+        for i in users_who_work_today:
+            output+= "\n⏳ "
+            output += toolbox.list_user(i['user_id'], mention=False)
     tg.updater.bot.send_message(chat_id=config.ponche_group, text=output, reply_markup=reply_markup)#chat id is the destroyers group
     return()
 
@@ -96,9 +101,14 @@ def button(update, context):
 
 
         for i in ponched_users:
+            output+= "\n✅ "
             output+=datetime.fromtimestamp(i['timestamp']).strftime("%I:%M:%S %p") + ": "
             output+=toolbox.list_user(i['user_id'], mention=False)
-            output+="\n"
+
+        for i in users_who_work_today:
+            if i not in ponched_users:
+                output+= "\n⏳ "
+                output += toolbox.list_user(i['user_id'], mention=False)
 
         update.callback_query.edit_message_text(output, reply_markup = reply_markup)
     else:
