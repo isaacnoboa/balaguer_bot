@@ -28,7 +28,7 @@ class MyDatabase:
                         sqla.Column('user_id', sqla.Integer),
                         sqla.Column('is_admin',sqla.Integer),
                         sqla.Column('name', sqla.String),
-                        sqla.Column('workweek_start', sqla.String),
+                        sqla.Column('workweek_start', sqla.Integer),
                         )
         
         self.ponche = sqla.Table('ponche', meta,
@@ -102,6 +102,18 @@ class MyDatabase:
         result=self.conn.execute(fetch)
         a=self.unzip_results(result)
         return(a)
+
+    def get_users_who_work_today(timestamp):
+        if type(timestamp)==int or type(timestamp) == float:
+            timestamp=datetime.fromtimestamp(timestamp)
+        check=self.users.select()\
+                .where(self.users.c.workweek_start >= timestamp.weekday())\
+                .where(self.users.c.workweek_start < timestamp.weekday()+5 )
+        result=self.conn.execute(check)
+        a=self.unzip_results(result)
+        return(a)
+
+
 
 
 
