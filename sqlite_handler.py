@@ -6,83 +6,83 @@ import config
 
 meta = sqla.MetaData()
 
-class AlreadyAdded(Exception):
-    pass
+        class AlreadyAdded(Exception):
+                pass
 
-class MyDatabase:
-    """Wrapper around sqlalchemy, to bundle objects together."""
+                class MyDatabase:
+                        """Wrapper around sqlalchemy, to bundle objects together."""
 
-    def __init__(self, filename):
-        self.engine = sqla.create_engine('sqlite:///'+filename, echo = True, connect_args={"check_same_thread":False})
-        
-        #autoload=true in the table definition might save me from defining them every time
-        #source: https://campus.datacamp.com/courses/introduction-to-relational-databases-in-python/basics-of-relational-databases?ex=9
+                                def __init__(self, filename):
+                                        self.engine = sqla.create_engine('sqlite:///'+filename, echo = True, connect_args={"check_same_thread":False})
 
-        self.help_users = sqla.Table('help_users', meta, 
-                            sqla.Column('id', sqla.Integer, primary_key = True), 
-                            sqla.Column('user_id', sqla.Integer), 
-                            )
-        
-        self.users = sqla.Table('users', meta,
-                        sqla.Column('id', sqla.Integer, primary_key=True),
-                        sqla.Column('user_id', sqla.Integer),
-                        sqla.Column('is_admin',sqla.Integer),
-                        sqla.Column('name', sqla.String),
-                        sqla.Column('workweek_start', sqla.Integer),
-                        )
-        
-        self.ponche = sqla.Table('ponche', meta,
-                        sqla.Column('id', sqla.Integer, primary_key=True),
-                        sqla.Column('user_id', sqla.Integer),
-                        sqla.Column('timestamp', sqla.Integer),
-                        )
-        
-        self.breaks = sqla.Table('breaks', meta,
-                        sqla.Column('id', sqla.Integer, primary_key=True),
-                        sqla.Column('user_id', sqla.Integer),
-                        sqla.Column('start_time', sqla.Integer),
-                        sqla.Column('expected_length', sqla.Integer),
-                        sqla.Column('end_time', sqla.Integer),
-                        sqla.Column('alarm_channel',sqla.Integer),
-                        )
+                                        #autoload=true in the table definition might save me from defining them every time
+                                        #source: https://campus.datacamp.com/courses/introduction-to-relational-databases-in-python/basics-of-relational-databases?ex=9
 
-        self.scheduled_breaks = sqla.Table('scheduled_breaks', meta,
-                        sqla.Column('id', sqla.Integer, primary_key=True),
-                        sqla.Column('user_id', sqla.Integer),
-                        sqla.Column('start_time', sqla.Integer),
-                        sqla.Column('expected_length', sqla.Integer),
-                        sqla.Column('weekday', sqla.Integer),
-                        )
-        
+                                        self.help_users = sqla.Table('help_users', meta, 
+                                                        sqla.Column('id', sqla.Integer, primary_key = True), 
+                                                        sqla.Column('user_id', sqla.Integer), 
+                                                        )
+
+                                        self.users = sqla.Table('users', meta,
+                                                        sqla.Column('id', sqla.Integer, primary_key=True),
+                                                        sqla.Column('user_id', sqla.Integer),
+                                                        sqla.Column('is_admin',sqla.Integer),
+                                                        sqla.Column('name', sqla.String),
+                                                        sqla.Column('workweek_start', sqla.Integer),
+                                                        )
+
+                                        self.ponche = sqla.Table('ponche', meta,
+                                                        sqla.Column('id', sqla.Integer, primary_key=True),
+                                                        sqla.Column('user_id', sqla.Integer),
+                                                        sqla.Column('timestamp', sqla.Integer),
+                                                        )
+
+                                        self.breaks = sqla.Table('breaks', meta,
+                                                        sqla.Column('id', sqla.Integer, primary_key=True),
+                                                        sqla.Column('user_id', sqla.Integer),
+                                                        sqla.Column('start_time', sqla.Integer),
+                                                        sqla.Column('expected_length', sqla.Integer),
+                                                        sqla.Column('end_time', sqla.Integer),
+                                                        sqla.Column('alarm_channel',sqla.Integer),
+                                                        )
+
+                                        self.scheduled_breaks = sqla.Table('scheduled_breaks', meta,
+                                                        sqla.Column('id', sqla.Integer, primary_key=True),
+                                                        sqla.Column('user_id', sqla.Integer),
+                                                        sqla.Column('start_time', sqla.Integer),
+                                                        sqla.Column('expected_length', sqla.Integer),
+                                                        sqla.Column('weekday', sqla.Integer),
+                                                        )
+
         meta.create_all(self.engine)
-        self.conn=self.engine.connect()
+self.conn=self.engine.connect()
 
-    def unzip_results(self, result):
-        # takes a result object, returns a list of dictionaries with each row and column
-        d, a = {}, []
-        for row in result:
-            for column, value in row.items():
-                d={**d, **{column:value}}
-            a.append(d)
-        return(a)
+        def unzip_results(self, result):
+                # takes a result object, returns a list of dictionaries with each row and column
+                d, a = {}, []
+                for row in result:
+                for column, value in row.items():
+                        d={**d, **{column:value}}
+        a.append(d)
+return(a)
 
-    def add_help_user(self, user_id):
+        def add_help_user(self, user_id):
         ins=self.help_users.insert().values(user_id=user_id)
         output=self.conn.execute(ins)
         return(output.inserted_primary_key)
-        
-    def remove_help_user(self, user_id):
+
+        def remove_help_user(self, user_id):
         remove=self.help_users.delete().where(self.help_users.c.user_id==user_id)
         output=self.conn.execute(remove)
         return()
 
-    def check_help_user(self, user_id):
+        def check_help_user(self, user_id):
         fetch=self.help_users.select().where(self.help_users.c.user_id==user_id)
         result=self.conn.execute(fetch)
         a=self.unzip_results(result)
         return(a)
 
-    def get_help_users(self):
+        def get_help_users(self):
         fetch=self.help_users.select()
         result=self.conn.execute(fetch)
         a=self.unzip_results(result)
@@ -91,24 +91,24 @@ class MyDatabase:
 
 
 
-    def get_user(self, user_id, mention=False): #TODO: add check for only one result back
+        def get_user(self, user_id, mention=False): #TODO: add check for only one result back
         fetch=self.users.select().where(self.users.c.user_id==user_id)
         result=self.conn.execute(fetch)
         a=self.unzip_results(result)
-        return(a)
+                                    return(a)
 
-    def get_all_users(self):
+                                             def get_all_users(self):
         fetch=self.users.select()
         result=self.conn.execute(fetch)
         a=self.unzip_results(result)
         return(a)
 
-    def get_users_who_work_today(self, timestamp):
+        def get_users_who_work_today(self, timestamp):
         if type(timestamp)==int or type(timestamp) == float:
             timestamp=datetime.fromtimestamp(timestamp)
         check=self.users.select()\
-                .where(self.users.c.workweek_start >= timestamp.weekday())\
-                .where(self.users.c.workweek_start < (timestamp.weekday() -2)%7 )
+                .where(self.users.c.workweek_start != timestamp.weekday()+1)\
+                .where(self.users.c.workweek_start != timestamp.weekday()+2)
         result=self.conn.execute(check)
         a=self.unzip_results(result)
         return(a)
