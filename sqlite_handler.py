@@ -103,12 +103,12 @@ class MyDatabase:
         a=self.unzip_results(result)
         return(a)
 
-    def get_users_who_work_today(timestamp):
+    def get_users_who_work_today(self, timestamp):
         if type(timestamp)==int or type(timestamp) == float:
             timestamp=datetime.fromtimestamp(timestamp)
         check=self.users.select()\
                 .where(self.users.c.workweek_start >= timestamp.weekday())\
-                .where(self.users.c.workweek_start < timestamp.weekday()+5 )
+                .where(self.users.c.workweek_start < (timestamp.weekday() -2)%7 )
         result=self.conn.execute(check)
         a=self.unzip_results(result)
         return(a)

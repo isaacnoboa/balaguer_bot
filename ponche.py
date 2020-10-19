@@ -9,9 +9,9 @@ import sqlite_handler as sql
 ponche_motd ="Pueblo dominicano... hoy es {0}, y es hora de reportarse a sus labores.\n\n"\
              "Bébete tu ponche y poncha para que no te ponchen.\n\nUsuaros ponchados:"
 
-def scheduled_punchin():
+def scheduled_punchin(update=None, context=None):
     now=datetime.now()
-    if now.hour < 16:
+    if now.hour < 6:
         output="No es como un chin temprano?"
         reply_markup=None
     else:
@@ -23,13 +23,13 @@ def scheduled_punchin():
         users_who_work_today = sql.db.get_users_who_work_today(now)
         output+= "\n"
         for i in users_who_work_today:
-            output+= "\n⏳ "
+            output+= "\n🕟 "
             output += toolbox.list_user(i['user_id'], mention=False)
     tg.updater.bot.send_message(chat_id=config.ponche_group, text=output, reply_markup=reply_markup)#chat id is the destroyers group
     return()
 
 def punchin(update, context):
-    scheduled_punchin()
+    scheduled_punchin(update, context) 
     return()
 
 def button(update, context):
@@ -99,15 +99,17 @@ def button(update, context):
             context.bot.answer_callback_query(query_id, text="usted ya está ponchado")
         ponched_users = sql.db.get_ponched_users(now.timestamp())
 
-
+        ponched_ids=[]
         for i in ponched_users:
             output+= "\n✅ "
             output+=datetime.fromtimestamp(i['timestamp']).strftime("%I:%M:%S %p") + ": "
             output+=toolbox.list_user(i['user_id'], mention=False)
+            ponched_ids.append(i['user_id'])
 
+        users_who_work_today = sql.db.get_users_who_work_today(now)
         for i in users_who_work_today:
-            if i not in ponched_users:
-                output+= "\n⏳ "
+            if i['user_id'] not in ponched_ids:
+                output+= "\n🕟 "
                 output += toolbox.list_user(i['user_id'], mention=False)
 
         update.callback_query.edit_message_text(output, reply_markup = reply_markup)
