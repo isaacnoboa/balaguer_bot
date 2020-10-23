@@ -148,11 +148,11 @@ def quien(update,context):
             output+=str(len(break_users))+" users away.\n\n"
     for i in break_users:
         break_type=break_duration_calculator(i['expected_length'])
-        output+=toolbox.list_user(i['user_id'],mention=False)
-        output+="\nEn "+break_type
-        output+=" desde las "+datetime.fromtimestamp(i['start_time']).strftime("%H:%M:%S")
-        output+="\n"+toolbox.seconds_to_string(timestamp-i['start_time'])
-        output+="\n\n"
+        output+="*"+toolbox.list_user(i['user_id'],mention=False)+"*"
+        output+=" - "+datetime.fromtimestamp(i['start_time']).strftime("%H:%M")
+        output+=" "+break_type
+        output+=" ("+toolbox.seconds_to_string(timestamp-i['start_time'])+")"
+        output+="\n"
     context.bot.send_message(chat_id=chat_id, text=output, parse_mode="Markdown")#, reply_to_message_id=update.message.message_id)
     #toolbox.save_json("break_users",break_users)
     return
