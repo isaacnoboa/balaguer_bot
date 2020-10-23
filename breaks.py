@@ -151,7 +151,7 @@ def quien(update,context):
         output+="*"+toolbox.list_user(i['user_id'],mention=False)+"*"
         output+=" - "+datetime.fromtimestamp(i['start_time']).strftime("%H:%M")
         output+=" "+break_type
-        output+=" ("+toolbox.seconds_to_string(timestamp-i['start_time'])+")"
+        output+=" ("+toolbox.seconds_to_string(timestamp-i['start_time'], longform=False)+")"
         output+="\n"
     context.bot.send_message(chat_id=chat_id, text=output, parse_mode="Markdown")#, reply_to_message_id=update.message.message_id)
     #toolbox.save_json("break_users",break_users)
