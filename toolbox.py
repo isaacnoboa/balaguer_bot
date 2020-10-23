@@ -21,7 +21,7 @@ def count_away_users(amount):
     else:
         return("\n\n"+str(amount)+" users away.")
 
-def seconds_to_string(i, include_seconds=True):
+def seconds_to_string(i, include_seconds=True, longform=True):
     if type(i)==timedelta:
         duration=round(i.total_seconds())
     elif type(i)==int:
@@ -40,46 +40,53 @@ def seconds_to_string(i, include_seconds=True):
     if not include_seconds:
         seconds = 0
 
-    if hours == 1:
-        elements.append('1 hora')
-    elif hours != 0:
-        elements.append(str(hours)+' horas')
+    if longform: #probably should break this out into a method idk
+        if hours == 1:
+            elements.append('1 hora')
+        elif hours != 0:
+            elements.append(str(hours)+' horas')
 
-    if minutes == 1:
-        elements.append('1 minuto')
-    elif minutes != 0:
-        elements.append(str(minutes)+' minutos')
+        if minutes == 1:
+            elements.append('1 minuto')
+        elif minutes != 0:
+            elements.append(str(minutes)+' minutos')
 
-    if seconds == 1:
-        elements.append('1 segundo')
-    elif seconds != 0:
-        elements.append(str(seconds)+' segundos')
+        if seconds == 1:
+            elements.append('1 segundo')
+        elif seconds != 0:
+            elements.append(str(seconds)+' segundos')
 
 
-    if len(elements) == 3:
-        output = (elements[0]+', '+
-                 elements[1]+' y '+
-                 elements[2]
-                 )
-    elif len(elements) == 2:
-        output = (elements[0]+' y '+
-                 elements[1]
-                 )
-
-    elif len(elements) == 1:
-        output = elements[0]
-
-    else:
-        notify_owner('something went wrong: len(elements) == '+
-                     len(elements)+
-                     "\n"+
-                     '\nhours='+str(hours)+
-                     '\nminutes='+str(minutes)+
-                     '\nseconds='+str(seconds)
+        if len(elements) == 3:
+            output = (elements[0]+', '+
+                     elements[1]+' y '+
+                     elements[2]
+                     )
+        elif len(elements) == 2:
+            output = (elements[0]+' y '+
+                     elements[1]
                      )
 
-    return(output)
+        elif len(elements) == 1:
+            output = elements[0]
 
+        else:
+            notify_owner('something went wrong: len(elements) == '+
+                         len(elements)+
+                         "\n"+
+                         '\nhours='+str(hours)+
+                         '\nminutes='+str(minutes)+
+                         '\nseconds='+str(seconds)
+                         )
+    else:
+        if hours != 0:
+            output += str(hours)+"h"
+        if minutes != 0:
+            output += str(minutes)+"m"
+        if seconds != 0:
+            output += str(seconds)+"s"
+
+    return(output)
 
 #takes a list of user dicts such as those provided by the sql.db.get_help_users function
 def list_users(id_list, mention=True): #db'd
