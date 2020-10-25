@@ -8,11 +8,11 @@ import config
 import sqlite_handler as sql
 
 ponche_motd ="Pueblo dominicano... hoy es {0}, y es hora de reportarse a sus labores.\n\n"\
-             "Bébete tu ponche y poncha para que no te ponchen.\n\nUsuaros:"
+             "Bébete tu ponche y poncha para que no te ponchen.\n\nUsuarios:"
 
 def scheduled_punchin(update=None, context=None):
     now=datetime.now()
-    if now.hour < 6:
+    if now.hour < 17:
         output="No es como un chin temprano?"
         reply_markup=None
     else:

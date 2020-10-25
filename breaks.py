@@ -8,7 +8,7 @@ import schedule
 def rebuild_schedule():
     schedule.clear()
     #first the ponche lol
-    schedule.every().day.at("16:15").do(ponche.scheduled_punchin)
+    schedule.every().day.at("17:15").do(ponche.scheduled_punchin)
     #then get every pending break
     current_breaks=sql.db.get_current_breaks()
     for i in current_breaks: #calculate how many mins left on each event
