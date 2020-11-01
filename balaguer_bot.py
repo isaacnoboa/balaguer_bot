@@ -60,7 +60,7 @@ def echo(update, context):
         reply_markup = telegram.InlineKeyboardMarkup(keyboard)
         context.bot.send_message(chat_id=chat_id, text=output, reply_markup=reply_markup)
     if "$" in text:
-        if user_is_admin(user_id):
+        if toolbox.user_is_admin(user_id):
             print("\n\nUPDATE:")
             print(str(update))
             print("\n\nCONTEXT:")
@@ -201,6 +201,7 @@ tg.dispatcher.add_handler(tg.CommandHandler('lunch', breaks.taking_lunch))
 tg.dispatcher.add_handler(tg.CommandHandler('back', breaks.back))
 tg.dispatcher.add_handler(tg.CommandHandler('quien', breaks.quien))
 
+tg.dispatcher.add_handler(tg.CommandHandler('test', toolbox.test))
 
 tg.dispatcher.add_handler(tg.CommandHandler('ponche', ponche.punchin))
 

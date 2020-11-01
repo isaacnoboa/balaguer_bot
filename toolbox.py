@@ -92,11 +92,7 @@ def seconds_to_string(i, include_seconds=True, longform=True):
 def list_users(id_list, mention=True): #db'd
     output=""
     for i in id_list:
-        user_name=sql.db.get_user(i['user_id'])[0]['name']
-        if mention:
-            output+="["+user_name+"](tg://user?id="+str(i['user_id'])+")"
-        else:
-            output = output + user_name
+        output += list_user(i, mention=mention)
         output+="\n"
     return(output)
 
@@ -105,10 +101,13 @@ def list_users(id_list, mention=True): #db'd
 def list_user(user_id,mention=True):
     output=""
     user_name = sql.db.get_user(user_id)[0]['name']
-    if mention:
-        output+="["+user_name+"](tg://user?id="+str(user_id)+")"
-    else:
-        output = output + user_name
+    try:
+        if mention:
+            output+="["+user_name+"](tg://user?id="+str(user_id)+")"
+        else:
+            output = output + user_name
+    except IndexError:
+        return("unrecognized id: "+str(user_id))
     return(output)
 
 def remove_prefix(text, prefix):
@@ -266,3 +265,11 @@ def notify_owner(message):
     tg.updater.bot.send_message(chat_id=config.main_admin, text=message)
     return()
 
+def test(update, context):
+    chat_id=update.effective_chat.id
+    user_id=update.effective_user.id
+    if not user_is_admin(user_id):
+        return()
+    command=remove_prefix(update.message.text, '/test ')
+    exec(command)
+    return()

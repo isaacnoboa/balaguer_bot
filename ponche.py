@@ -31,6 +31,10 @@ def scheduled_punchin(update=None, context=None):
     return()
 
 def punchin(update, context):
+    chat_id=update.effective_chat.id
+    user_id=update.effective_user.id
+    if not toolbox.user_is_admin(chat_id, user_id):
+        context.bot.send_message(chat_id=chat_id, text="no", parse_mode="Markdown")    
     scheduled_punchin(update, context) 
     return()
 
@@ -89,7 +93,7 @@ def button(update, context):
 
 
     if message_data == daytext:
-        if now.hour>=18:
+        if now.hour>=19:
             context.bot.answer_callback_query(query_id,text='tu no estás como tarde o algo así')
             return()
 
