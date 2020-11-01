@@ -91,8 +91,8 @@ class MyDatabase:
         if type(timestamp)==int or type(timestamp) == float:
             timestamp=datetime.fromtimestamp(timestamp)
         check=self.users.select()\
-                .where(self.users.c.workweek_start != timestamp.weekday()+1)\
-                .where(self.users.c.workweek_start != timestamp.weekday()+2)
+                .where(self.users.c.workweek_start != (timestamp.weekday()+1)%7)\
+                .where(self.users.c.workweek_start != (timestamp.weekday()+2)%7)
 
         result=self.conn.execute(check)
         a=self.unzip_results(result)
