@@ -12,7 +12,7 @@ ponche_motd ="Pueblo dominicano... hoy es {0}, y es hora de reportarse a sus lab
 
 def scheduled_punchin(update=None, context=None):
     now=datetime.now()
-    if now.hour < 17:
+    if now.hour < 16:
         output="No es como un chin temprano?"
         reply_markup=None
     else:
@@ -33,8 +33,9 @@ def scheduled_punchin(update=None, context=None):
 def punchin(update, context):
     chat_id=update.effective_chat.id
     user_id=update.effective_user.id
-    if not toolbox.user_is_admin(chat_id, user_id):
+    if not toolbox.user_is_admin(user_id):
         context.bot.send_message(chat_id=chat_id, text="no", parse_mode="Markdown")    
+        return()
     scheduled_punchin(update, context) 
     return()
 
@@ -56,6 +57,7 @@ def button(update, context):
     longdaytext=now.strftime("%A %-d de %B del año %Y")
     message_data=update.callback_query.data
     user_id=update.callback_query.from_user.id
+    user_name=update.callback_query.from_user.first_name
     reply_markup = update.callback_query.message.reply_markup
     query_id=update.callback_query.id
     output=ponche_motd.format(longdaytext)+"\n"
@@ -93,7 +95,7 @@ def button(update, context):
 
 
     if message_data == daytext:
-        if now.hour>=19:
+        if now.hour>=21:
             context.bot.answer_callback_query(query_id,text='tu no estás como tarde o algo así')
             return()
 
@@ -109,7 +111,7 @@ def button(update, context):
         for i in ponched_users:
             output+= "\n✅ "
             output+=datetime.fromtimestamp(i['timestamp']).strftime("%I:%M:%S %p") + ": "
-            output+=toolbox.list_user(i['user_id'], mention=False)
+            output+=toolbox.list_user(i['user_id'], mention=False, placeholder=user_name)
             ponched_ids.append(i['user_id'])
 
         users_who_work_today = sql.db.get_users_who_work_today(now)
@@ -117,7 +119,7 @@ def button(update, context):
         for i in users_who_work_today:
             if i['user_id'] not in ponched_ids:
                 output+= "\n🕟 "
-                output += toolbox.list_user(i['user_id'], mention=False)
+                output += toolbox.list_user(i['user_id'], mention=False, placeholder=user_name)
 
         update.callback_query.edit_message_text(output, reply_markup = reply_markup)
     else:

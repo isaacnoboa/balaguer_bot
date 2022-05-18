@@ -98,16 +98,18 @@ def list_users(id_list, mention=True): #db'd
 
 
 #takes a user ID as a string
-def list_user(user_id,mention=True):
+def list_user(user_id,mention=True, placeholder='alguien?'):
     output=""
-    user_name = sql.db.get_user(user_id)[0]['name']
+    if type(user_id)==dict:# why is this even possible lmao
+        user_id=user_id['user_id'] 
     try:
-        if mention:
-            output+="["+user_name+"](tg://user?id="+str(user_id)+")"
-        else:
-            output = output + user_name
+        user_name = sql.db.get_user(user_id)[0]['name']
     except IndexError:
-        return("unrecognized id: "+str(user_id))
+        user_name = placeholder
+    if mention:
+        output+="["+user_name+"](tg://user?id="+str(user_id)+")"
+    else:
+        output = output + user_name
     return(output)
 
 def remove_prefix(text, prefix):
@@ -244,7 +246,7 @@ def ping(update,context):
 def reboot(update,context):
     chat_id=update.effective_chat.id
     user_id=update.effective_user.id
-    if not user_is_in_group_or_admin(chat_id, user_id):
+    if not user_is_admin(user_id):
         return()
     context.bot.send_message(chat_id=chat_id, text="rebooting...", parse_mode="Markdown")#, reply_to_message_id=update.message.message_id)
     sys.stdout.flush() 

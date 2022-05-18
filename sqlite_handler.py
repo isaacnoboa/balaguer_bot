@@ -77,6 +77,8 @@ class MyDatabase:
         a=self.unzip_results(result)
         return(a)
     def get_user(self, user_id, mention=False): #TODO: add check for only one result back
+        print('\n\n\n'+str(user_id)+'\n\n\n')
+
         fetch=self.users.select().where(self.users.c.user_id==user_id)
         result=self.conn.execute(fetch)
         a=self.unzip_results(result)

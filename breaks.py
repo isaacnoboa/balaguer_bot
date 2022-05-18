@@ -5,10 +5,12 @@ import toolbox
 from datetime import datetime, timedelta
 import schedule 
 
+user_name_force_REFACTOR_THIS_PLEASE={}
+
 def rebuild_schedule():
     schedule.clear()
     #first the ponche lol
-    schedule.every().day.at("17:15").do(ponche.scheduled_punchin)
+    schedule.every().day.at("16:15").do(ponche.scheduled_punchin)
     #then get every pending break
     current_breaks=sql.db.get_current_breaks()
     for i in current_breaks: #calculate how many mins left on each event
@@ -33,6 +35,7 @@ def break_duration_calculator(expected_length):
 def taking_break(update, context, lunch=False):
     chat_id=update.effective_chat.id
     user_id=update.effective_user.id
+    user_name=update.effective_user.first_name
     if not toolbox.user_is_in_group_or_admin(chat_id, user_id):
         return()
     timestamp=datetime.now().timestamp()
@@ -40,8 +43,8 @@ def taking_break(update, context, lunch=False):
     break_users=sql.db.get_current_breaks()
     
     toolbox.debug(break_users)
-    username = toolbox.list_user(user_id, mention=False)
-
+    username = toolbox.list_user(user_id, mention=False, placeholder=user_name)
+    user_name_force_REFACTOR_THIS_PLEASE[user_id]=user_name
     try:
         expected_length=int(context.args[0])
     except:
@@ -87,7 +90,11 @@ def alarm(break_data):
     diff=now-break_data['start_time']
     break_type=break_duration_calculator(break_data['expected_length'])
     output=""
-    output+=toolbox.list_user(break_data['user_id'],mention=True)
+    try:
+        placeholder=user_name_force_REFACTOR_THIS_PLEASE[break_data['user_id']]
+    except KeyError:
+        placeholder='alguien?'
+    output+=toolbox.list_user(break_data['user_id'],mention=True, placeholder=placeholder)
     output+=" lleva ya "
     output+=toolbox.seconds_to_string(diff, include_seconds=False)
     output+=" de "+break_type+"."
@@ -99,6 +106,7 @@ def alarm(break_data):
 def back(update, context):
     chat_id=update.effective_chat.id
     user_id=update.effective_user.id
+    user_name=update.effective_user.first_name
     if not toolbox.user_is_in_group_or_admin(chat_id, user_id):
         return()
     timestamp=datetime.now().timestamp()
@@ -106,7 +114,7 @@ def back(update, context):
     break_users=sql.db.get_current_breaks()
     
     toolbox.debug(break_users)
-    username = toolbox.list_user(user_id, mention=False)
+    username = toolbox.list_user(user_id, mention=False, placeholder=user_name)
 
     user_is_on_break = False
     for i in break_users:
@@ -134,6 +142,7 @@ def back(update, context):
 def quien(update,context):
     chat_id=update.effective_chat.id
     user_id=update.effective_user.id
+    user_name=update.effective_user.first_name
     if not toolbox.user_is_in_group_or_admin(chat_id, user_id):
         return()
     output=""
@@ -148,7 +157,7 @@ def quien(update,context):
             output+=str(len(break_users))+" users away.\n\n"
     for i in break_users:
         break_type=break_duration_calculator(i['expected_length'])
-        output+="*"+toolbox.list_user(i['user_id'],mention=False)+"*"
+        output+="*"+toolbox.list_user(i['user_id'],mention=False,placeholder=user_name)+"*"
         output+=" - "+datetime.fromtimestamp(i['start_time']).strftime("%H:%M")
         output+=" "+break_type
         output+=" ("+toolbox.seconds_to_string(timestamp-i['start_time'], longform=False)+")"
